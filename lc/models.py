@@ -5,8 +5,8 @@ from datetime import datetime
 from lc.main import db
 
 
-class Call(db.Model):
-    __tablename__ = 'calls'
+class Task(db.Model):
+    __tablename__ = 'tasks'
     id = db.Column(db.Integer, primary_key=True)
     line = db.Column(db.String(20))
     status = db.Column(db.String(20))
