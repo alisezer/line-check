@@ -1,42 +1,82 @@
+from datetime import datetime
+import logging
+
 from flask import Blueprint, jsonify, request
 
+from lc.utils import check_line_name_validity
 from lc.models import Task
 from lc.main import db
 
+logger = logging.getLogger(__name__)
 api = Blueprint('api', __name__)
 
 @api.route('/tasks/', methods=['GET'])
 def get_all_tasks():
-    print("Querying all tasks")
+    logger.info("Querying all tasks")
     tasks = Task.query.all()
     output = {'tasks': [task.to_half_json() for task in tasks]}
     return jsonify(output)
 
 @api.route('/tasks/<int:id>', methods=['GET'])
 def get_single_task(id):
-    print(f"Querying single task with {id}")
-    task = Task.query.get_or_404(id)
-    return jsonify(task.to_full_json())
+    logger.info(f"Querying single task with {id}")
+    task = Task.query.get(id)
+    if task:
+        output = task.to_full_json()
+    else:
+        output = {"failure": f"Task with ID {id} cannot be found"}
+    return jsonify(output)
 
 @api.route('/tasks/', methods=['POST'])
 def create_new_task():
-    print("Creating new task")
-    print(request.form.get("schedule_time"))
-    print(request.form.get("lines"))
-    return jsonify({'scuesss': True})
+    logger.info("Creating new task")
+    lines = request.form.get("lines")
+    line_validity = check_line_name_validity(lines)
+
+    if line_validity:
+        schedule_time = request.form.get("schedule_time", datetime.now())
+        task = Task(
+            lines=lines,
+            schedule_time=schedule_time,
+            status="Scheduled"
+        )
+        db.session.add(task)
+        db.session.commit()
+        output = {
+            "success": "Task has been created",
+            "task": task.to_full_json()
+        }
+    else:
+        output = {"failure": "Incorrect line name"}
+
+    return jsonify(output)
 
 @api.route('/tasks/<int:id>', methods=['PUT'])
 def edit_task(id):
-    print("Editing existing task")
-    # task = task.query.get_or_404(id)
-    # task.schedule_time = request.json.get('line')
-    # task.line = request.json.get('line')
+    logger.info(f"Editing existing task with ID {id}")
+    output = {}
 
-    # db.session.add(task)
-    # db.session.commit()
+    task = Task.query.get(id)
+    if task:
+        lines = request.form.get("lines")
+        if lines:
+            line_validity = check_line_name_validity(lines)
+            if line_validity:
+                task.lines = lines
+            else:
+                output["failure"] = "Line name couldn't be updated because of incorrect naming"
 
-    tmp = {"tmp": True}
-    return jsonify(tmp)
-    # return jsonify(task.to_full_json())
+        schedule_time = request.form.get("schedule_time")
+        if schedule_time:
+            task.schedule_time = schedule_time
+
+        if lines or schedule_time:
+            task.updated_at = datetime.now()
+            db.session.add(task)
+            db.session.commit()
+        output["task"] = task.to_full_json()
+    else:
+        output = {"failure": f"Task with ID {id} cannot be found"}
+    return jsonify(output)
 
 """curl -X POST -d "schedule_time=2021-06-05T17:00:00&lines=victoria" http://localhost:8000/v1/tasks"""
