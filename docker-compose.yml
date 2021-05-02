@@ -1,0 +1,40 @@
+version: "3"
+
+services:
+
+  api:
+    image: line-check-api
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: always
+    depends_on:
+      - db
+    ports:
+      - "8000:8000"
+    networks:
+      - subnet
+    volumes:
+      - ./app:/usr/src/stories/app
+      - ./logs:/usr/src/stories/logs
+      - ./migrations:/usr/src/stories/migrations
+
+  database:
+    image: postgres:12
+    container_name: database
+    environment:
+      POSTGRES_USER: deploy
+      POSTGRES_PASSWORD: docker
+      POSTGRES_DB: linecheck
+    ports:
+     - '5442:5432'
+    networks:
+      - subnet
+    volumes:
+      - database:/var/lib/postgresql/data
+
+networks:
+  subnet:
+
+volumes:
+  database:
