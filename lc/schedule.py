@@ -34,6 +34,7 @@ def update_task_with_results(task):
         task.updated_at = datetime.now()
         db.session.add(task)
         db.session.commit()
+    return task
 
 
 def run_scheduler():
