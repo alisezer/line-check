@@ -4,6 +4,8 @@ services:
 
   api:
     image: line-check-api
+    environment:
+      DB_HOST: database
     build:
       context: .
       dockerfile: Dockerfile
@@ -14,10 +16,6 @@ services:
       - "8000:8000"
     networks:
       - subnet
-    volumes:
-      - ./app:/usr/src/stories/app
-      - ./logs:/usr/src/stories/logs
-      - ./migrations:/usr/src/stories/migrations
 
   database:
     image: postgres:12
@@ -27,7 +25,7 @@ services:
       POSTGRES_PASSWORD: docker
       POSTGRES_DB: linecheck
     ports:
-     - '5442:5432'
+     - "5442:5432"
     networks:
       - subnet
     volumes:

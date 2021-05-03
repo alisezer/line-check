@@ -6,6 +6,7 @@ from flask import Blueprint, jsonify, request
 from lc.utils import check_line_name_validity
 from lc.models import Task
 from lc.main import db
+from lc.constants import SCHEDULED_TASK_STATUS
 
 logger = logging.getLogger(__name__)
 api = Blueprint('api', __name__)
@@ -38,7 +39,7 @@ def create_new_task():
         task = Task(
             lines=lines,
             schedule_time=schedule_time,
-            status="Scheduled"
+            status=SCHEDULED_TASK_STATUS
         )
         db.session.add(task)
         db.session.commit()
@@ -78,5 +79,3 @@ def edit_task(id):
     else:
         output = {"failure": f"Task with ID {id} cannot be found"}
     return jsonify(output)
-
-"""curl -X POST -d "schedule_time=2021-06-05T17:00:00&lines=victoria" http://localhost:8000/v1/tasks"""

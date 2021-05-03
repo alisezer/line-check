@@ -13,3 +13,7 @@ ACCEPTED_LINES = [
     "victoria",
     "waterloo-city",
 ]
+
+SCHEDULED_TASK_STATUS = "scheduled"
+FAILED_TASK_STATUS = "failed"
+SUCCEEDED_TASK_STATUS = "succeeded"

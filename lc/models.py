@@ -1,7 +1,9 @@
+"""Data Models"""
+
+from datetime import datetime
 
 from sqlalchemy.dialects.postgresql import JSON
 
-from datetime import datetime
 from lc.main import db
 
 

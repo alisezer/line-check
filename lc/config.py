@@ -8,7 +8,7 @@ env.read_env()
 
 
 # Database configurations
-DB_HOST = env.str('DB_HOST', 'localhost')
+DB_HOST = env.str('DB_HOST', 'database')
 DB_PORT = env.int('DB_PORT', 5432)
 DB_NAME = env.str('DB_DB', 'linecheck')
 DB_USER = env.str('DB_USER', 'deploy')

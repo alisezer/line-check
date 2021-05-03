@@ -1,0 +1,1 @@
+* * * * * cd /usr/src/linecheck && export FLASK_APP=line_check.py && /usr/local/bin/flask scheduled >>scheduled.log 2>&1
