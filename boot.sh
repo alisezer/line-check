@@ -9,5 +9,6 @@ while true; do
     sleep 5
 done
 
+printenv | grep -v "no_proxy" >> /etc/environment
 cron
 exec gunicorn -c gunicorn.py line_check:app
