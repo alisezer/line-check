@@ -21,7 +21,7 @@ or
 
 ```
 virtualenv venv
-source venv bin activate
+source venv/bin/activate
 pip install -r requirements.txt
 ```
 
@@ -45,7 +45,11 @@ docker compose up --build
 
 ### Running Tests
 
-Tests are handled through pytest. You can run both in regular or coverage mode.
+Tests are handled through pytest. You can run both in regular or coverage mode. If you are using the venv method for your environment, you might want to install testing/dev packages before going ahead with the tests
+
+```
+pip install -r requirements-dev.txt
+```
 
 You will need a running instance of the database before you can run the tests. Some of the tests are actually testing how the API interracts with the DB (read/writes).
 
@@ -99,7 +103,7 @@ flask scheduled
 For setting up the crontab, you can check out to crontab file and add it to your local system by adjusting the paths. However, once again, leaving that to the docker container might be the better option.
 
 ### Tweaking the Application Configurations
-All of the configuration changes that you can do to the application can be set by via env vars. To see the list of configurable vars, please see the `.env.template`
+All of the configuration changes that you can do to the application can be set via env vars. To see the list of configurable vars, please see the `.env.template`
 
 The first group is related to configuring the DB: if you wanted to point to a real one you would need to change those..
 
